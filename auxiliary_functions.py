@@ -4,10 +4,12 @@ import random
 import plotly.graph_objs as go
 import cv2
 import matplotlib.pyplot as plt
+from IPython.display import Image
+
 
 def display_gif(fn):
-    from IPython import display
-    return display.HTML('<img src="{}" width="50%" height="50%">'.format(fn))
+    with open('data/both.gif','rb') as f:
+        display(Image(data=f.read(), format='png'))
 
 def configure_plotly_browser_state():
   import IPython
