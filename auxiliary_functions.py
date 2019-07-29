@@ -7,11 +7,11 @@ import matplotlib.pyplot as plt
 from IPython.display import Image
 
 def is_in_colab():
-	try:
-	  import google.colab
-	  return True
-	except:
-	  return False
+    try:
+        import google.colab
+        return True
+    except:
+        return False
 
 def display_gif(fn):
     with open('data/both.gif','rb') as f:
@@ -50,8 +50,8 @@ def show_image(img, title=None, normalize=False, show_scale=False):
         plt.colorbar()
 
 def show_pointcloud(pcl, colors, valid_mask=None, points_to_show = 10000):
-	if is_in_colab():
-		configure_plotly_browser_state()
+    if is_in_colab():
+        configure_plotly_browser_state()
     if len(pcl.shape) == 3:
         assert len(colors.shape) == 3
         pcl = pcl.reshape(3, -1)
