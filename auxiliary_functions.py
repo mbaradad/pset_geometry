@@ -2,6 +2,13 @@ import plotly
 import numpy as np
 import random
 import plotly.graph_objs as go
+import cv2
+import matplotlib.pyplot as plt
+
+def display_gif(fn):
+    from IPython import display
+    return display.HTML('<img src="{}" width="50%" height="50%">'.format(fn))
+
 def configure_plotly_browser_state():
   import IPython
   display(IPython.core.display.HTML('''
@@ -15,20 +22,22 @@ def configure_plotly_browser_state():
           });
         </script>
         '''))
-def show_image(img, title=None, normalize=False):
-    if len(img.shape) == 2:
-        img = np.tile(img[None,:,:], (3,1,1))
-
-    img = img.transpose((1,2,0))
+def show_image(img, title=None, normalize=False, show_scale=False):
+    if len(img.shape) == 3:
+        img = img.transpose((1,2,0))
     if normalize:
         img = img*1.0
         img = (img - img.min())/(img.max() - img.min())
-        img = np.array(img*255.0, dtype='uint8')
-    plt.figure()
+    fig = plt.figure()
     if not title is None:
         plt.title(title)
-    _ = plt.imshow(img)
+    if len(img.shape) == 2:
+        _ = plt.imshow(img, cmap=plt.get_cmap('Greys'))
+    else:
+        _ = plt.imshow(img)
 
+    if show_scale:
+        plt.colorbar()
 def show_pointcloud(pcl, colors, valid_mask=None, points_to_show = 10000):
     if len(pcl.shape) == 3:
         assert len(colors.shape) == 3
@@ -68,14 +77,14 @@ def show_pointcloud(pcl, colors, valid_mask=None, points_to_show = 10000):
     layout = go.Layout(
       margin={'l': 0, 'r': 0, 'b': 0, 't': 0}
     )
-    #up=dict(x=0, y=0, z=1),
-    #center=dict(x=0, y=0, z=0),
-    #eye=dict(x=0.1, y=0.1, z=2.5)
 
+    # center is lookAt point
+    # eye is the camera center
+    # up is the up direction
     camera = dict(
         up=dict(x=0, y=-1, z=0),
-        center=dict(x=0, y=0, z=0),
-        eye=dict(x=0, y=0.3, z=-1.5)
+        center=dict(x=0, y=0, z=0.5),
+        eye=dict(x=0.3, y=0, z=-1.5)
     )
     layout.update(scene=dict(camera=camera,aspectmode='data')),
     data = [trace]
