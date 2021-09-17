@@ -110,3 +110,11 @@ def show_pointcloud(pcl, colors, valid_mask=None, points_to_show = 10000):
 
 def imread(img_file):
     return cv2.imread(img_file)[:,:,::-1].transpose((2,0,1))
+
+def show_inline(img):
+  fig = plt.figure()
+  ax = plt.Axes(fig, [0., 0., 1., 1.])
+  ax.set_axis_off()
+  fig.add_axes(ax)
+  plt.imshow(img)
+
