@@ -132,3 +132,22 @@ def scale_image_biggest_dim(im, biggest_dim):
     im = myimresize(im, target_shape=target_imshape)
   return im
 
+def myimresize(img, target_shape, interpolation_mode=cv2.INTER_NEAREST):
+  assert interpolation_mode in [cv2.INTER_NEAREST, cv2.INTER_AREA]
+  max = img.max(); min = img.min()
+  uint_mode = img.dtype == 'uint8'
+
+  assert len(target_shape) == 2, "Passed shape {}. Should only be (height, width)".format(target_shape)
+  if max > min and not uint_mode:
+    img = (img - min)/(max - min)
+  if len(img.shape) == 3 and img.shape[0] in [1,3]:
+    if img.shape[0] == 3:
+      img = np.transpose(cv2.resize(np.transpose(img, (1,2,0)), target_shape[::-1]), (2,0,1))
+    else:
+      img = cv2.resize(img[0], target_shape[::-1], interpolation=interpolation_mode)[None,:,:]
+  else:
+    img = cv2.resize(img, target_shape[::-1], interpolation=interpolation_mode)
+  if max > min and not uint_mode:
+    return (img*(max - min) + min)
+  else:
+    return img
