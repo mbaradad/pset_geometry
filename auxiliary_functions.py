@@ -118,3 +118,17 @@ def show_inline(img):
   fig.add_axes(ax)
   plt.imshow(img)
 
+
+def scale_image_biggest_dim(im, biggest_dim):
+  #if it is a video, resize inside the video
+  if im.shape[1] > im.shape[2]:
+    scale = im.shape[1] / (biggest_dim + 0.0)
+  else:
+    scale = im.shape[2] / (biggest_dim + 0.0)
+  target_imshape = (int(im.shape[1]/scale), int(im.shape[2]/scale))
+  if im.shape[0] == 1:
+    im = myimresize(im[0], target_shape=(target_imshape))[None,:,:]
+  else:
+    im = myimresize(im, target_shape=target_imshape)
+  return im
+
